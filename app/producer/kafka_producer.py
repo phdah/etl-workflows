@@ -4,6 +4,7 @@ import json
 
 from kafka import KafkaProducer
 
+
 def kafkaSender(topic: str, config: Dict[str, str], events: int) -> None:
     """
     Arguments:
@@ -16,13 +17,23 @@ def kafkaSender(topic: str, config: Dict[str, str], events: int) -> None:
     for i in range(events):
         message = json.dumps({"message_id": i})
         producer.send(topic, value=message)
-        producer.flush()  # Ensures all messages are sent
+        producer.flush()
     end_time = time.time()
-    executionTime: float  = end_time - start_time
+    executionTime: float = end_time - start_time
 
     if events:
-        print(f"Function took {executionTime} seconds to execute, for {events} events, with a mean of {events/executionTime} events/s")
+        print(
+            f"Function took {executionTime} seconds to execute, for {events} events, with a mean of {events/executionTime} events/s"
+        )
     else:
         print(f"Function ran for {executionTime} seconds")
 
 
+kafkaTopic = "my-topic"
+
+config = {
+    "bootstrap_servers": "127.0.0.1:9094",
+    "value_serializer": lambda x: x.encode("utf-8"),
+}
+
+kafkaSender(kafkaTopic, config, 10)
