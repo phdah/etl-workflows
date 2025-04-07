@@ -6,3 +6,7 @@ build-consumer:
 
 consumer: build-consumer
 	kubectl apply -f ./app/consumer/kafka-consumer-workflow.yaml -n argo-workflow
+
+set-docker-env:
+	eval $(minikube -p minikube docker-env)
+
