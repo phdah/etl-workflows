@@ -10,6 +10,7 @@ def kafkaConsumer(topic: str, config: dict, postgres: dict) -> None:
     Arguments:
         topic (str): The Kafka topic to consume messages from.
         config (dict): Configuration for the Kafka consumer.
+        postgres (dict): Configuration for the postgres target.
     """
     consumer = KafkaConsumer(topic, **config)
 
@@ -18,18 +19,19 @@ def kafkaConsumer(topic: str, config: dict, postgres: dict) -> None:
 
     # Create table if it doesn't exist
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS messages (
-            message_id SERIAL PRIMARY KEY,
-            content TEXT NOT NULL,
-            received_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        create table if not exists orders (
+            id serial primary key,
+            created_at timestamp default current_timestamp,
+            updated_at timestamp default current_timestamp,
+            content text not null
         );
     """)
     conn.commit()
 
     # Insert query with conflict handling
     insert_query = """
-        INSERT INTO messages (content)
-        VALUES (%s);
+        insert into orders (content)
+        values (%s);
     """
 
     for message in consumer:

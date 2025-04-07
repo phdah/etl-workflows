@@ -1,5 +1,5 @@
 run-producer:
-	python ./app/producer/kafka_producer.py
+	python ./app/producer/kafka_producer.py ./sample-superstore.xlsx
 
 build-consumer:
 	make -C ./app/consumer/ all
