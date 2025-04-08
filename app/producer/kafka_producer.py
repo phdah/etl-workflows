@@ -22,14 +22,20 @@ def kafkaSender(topic: str, config: Dict[str, str], file_path: str) -> None:
     start_time = time.time()
     for idx, row in df.iterrows():
         record = {
-            k: (v.isoformat() if isinstance(v, pd.Timestamp) else v)
+            k: (
+                v.isoformat()
+                if isinstance(v, pd.Timestamp) and not pd.isna(v)
+                else None
+                if pd.isna(v)
+                else v
+            )
             for k, v in row.to_dict().items()
         }
         message = json.dumps(record)
         producer.send(topic, value=message)
         producer.flush()
         print(f"Sent row {idx}")
-        time.sleep(1)
+        time.sleep(0.0046)
     end_time = time.time()
     executionTime: float = end_time - start_time
 
