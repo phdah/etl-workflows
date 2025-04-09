@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: dbt-run
+spec:
+  entrypoint: dbt-step
+  templates:
+    - name: dbt-step
+      container:
+        image: docker.io/library/dbt-runner:latest
+        command: ["dbt"]
+        args: ["run"]
+        workingDir: /app
+        imagePullPolicy: IfNotPresent
