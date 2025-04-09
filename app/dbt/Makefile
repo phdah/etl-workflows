@@ -1,16 +1,15 @@
-consumer=dbt-runner:latest
+dbtRunner=dbt-runner:latest
 
 build:
-	docker build --platform linux/amd64 --no-cache -t $(consumer) .
+	docker build --platform linux/amd64 --no-cache -t $(dbtRunner) .
 
 test:
-	docker run --rm -it $(consumer)
+	docker run --rm -it $(dbtRunner)
 
 upload:
-	@echo "Sometimes the image is not recreated, then call:"
-	@echo "minikube ssh"
-	@echo "docker rmi dbt-runner:latest"
-	@echo "exit"
-	minikube image load --overwrite $(consumer)
+	minikube image load --overwrite $(dbtRunner)
 
 all: build upload
+
+clean:
+	minikube image rm docker.io/library/$(dbtRunner)

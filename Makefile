@@ -19,3 +19,9 @@ dbt-runner: build-dbt-runner
 set-docker-env:
 	eval $(minikube -p minikube docker-env)
 
+clean:
+	make -C ./app/consumer/ clean
+	make -C ./app/dbt/ clean
+	kubectl delete -f ./app/consumer/kafka-consumer-workflow.yaml -n argo-workflow
+	kubectl delete -f ./app/dbt/dbt-workflow.yaml -n argo-workflow
+	eval $(minikube -p minikube docker-env --unset)
